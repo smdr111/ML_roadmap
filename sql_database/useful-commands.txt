@@ -1,0 +1,72 @@
+Last login: Fri Aug 29 13:41:10 on ttys000
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# CREATE DATABASE extra_db;
+CREATE DATABASE
+postgres=# \c extra_db;
+You are now connected to database "extra_db" as user "postgres".
+extra_db=# CREATE TABLE extra_table;
+ERROR:  syntax error at or near ";"
+LINE 1: CREATE TABLE extra_table;
+                                ^
+extra_db=# CREATE TABLE extra_table
+extra_db-# (
+extra_db(# name VARCHAR(50),
+extra_db(# birthdate DATE
+extra_db(# );
+CREATE TABLE
+extra_db=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ extra_db       | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(7 rows)
+
+extra_db=# \d
+            List of relations
+ Schema |    Name     | Type  |  Owner   
+--------+-------------+-------+----------
+ public | extra_table | table | postgres
+(1 row)
+
+extra_db=# \d extra_table
+                     Table "public.extra_table"
+  Column   |         Type          | Collation | Nullable | Default 
+-----------+-----------------------+-----------+----------+---------
+ name      | character varying(50) |           |          | 
+ birthdate | date                  |           |          | 
+
+extra_db=# DROP TABLE extra_table;
+DROP TABLE
+extra_db=# \d
+Did not find any relations.
+extra_db=# \c postgres
+You are now connected to database "postgres" as user "postgres".
+postgres=# DROP DATABASE extra_db;
+DROP DATABASE
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# 

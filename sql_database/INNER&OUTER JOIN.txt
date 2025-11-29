@@ -1,0 +1,96 @@
+Last login: Tue Oct 14 00:55:14 on ttys001
+(base) samandaroripov@Mac ~ % psql -U postgres;
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \d
+Did not find any relations.
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+                    List of relations
+ Schema |           Name           |   Type   |  Owner   
+--------+--------------------------+----------+----------
+ public | contact_interests        | table    | postgres
+ public | contact_interests_id_seq | sequence | postgres
+ public | contact_salary           | table    | postgres
+ public | contact_salary_id_seq    | sequence | postgres
+ public | contacts                 | table    | postgres
+ public | doughnut_list            | table    | postgres
+ public | example_table            | table    | postgres
+ public | interests                | table    | postgres
+ public | interests_id_seq         | sequence | postgres
+ public | my_contacts_id_seq       | sequence | postgres
+ public | my_contacts_two          | table    | postgres
+ public | orders                   | table    | postgres
+ public | orders_2                 | table    | postgres
+ public | orders_2_order_id_seq    | sequence | postgres
+ public | profession_id            | table    | postgres
+ public | profession_id_id_seq     | sequence | postgres
+(16 rows)
+
+example_db=# SELECT contacts.first_name,contacts.last_name,profession_id.name from contacts INNER JOIN profession_id ON  contacts.profession=profession_id.id;
+ first_name | last_name |    name     
+------------+-----------+-------------
+ Samandar   | Oripov    | doctor
+ Nick       | Fury      | student
+ Ali        | John      | cook
+ Angel      | Ventura   | businessman
+(4 rows)
+
+example_db=# SELECT c.first_name,c.last_name,p.name FROM contacts AS c INNER JOIN profession_id AS p ON c.profession=p.id;
+ first_name | last_name |    name     
+------------+-----------+-------------
+ Samandar   | Oripov    | doctor
+ Nick       | Fury      | student
+ Ali        | John      | cook
+ Angel      | Ventura   | businessman
+(4 rows)
+
+example_db=# INSERT INTO contacts (first_name,last_name,phone_number) VALUES ('Tom','Aspinall','+13141411312');
+INSERT 0 1
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  |     inerests      | id | phone_number | profession 
+------------+-----------+------------+-------------------+----+--------------+------------
+ Samandar   | Oripov    | 2003-09-05 | fighting,football |  1 | +13023639966 |          1
+ Nick       | Fury      | 1998-07-09 | gaming            |  2 | +13023639966 |          2
+ Ali        | John      | 2009-09-09 | listening music   |  3 | +13023639966 |          3
+ Angel      | Ventura   |            |                   |  4 | +13023639966 |          4
+ Tom        | Aspinall  |            |                   |  6 | +13141411312 |           
+(5 rows)
+
+example_db=# SELECT c.first_name,c.last_name,p.name FROM contacts AS c LEFT  OUTER  JOIN profession_id AS p ON c.profession=p.id;
+ first_name | last_name |    name     
+------------+-----------+-------------
+ Samandar   | Oripov    | doctor
+ Nick       | Fury      | student
+ Ali        | John      | cook
+ Angel      | Ventura   | businessman
+ Tom        | Aspinall  | 
+(5 rows)
+
+example_db=# SELECT c.first_name,c.last_name,p.name FROM contacts AS c RIGHT  OUTER  JOIN profession_id AS p ON c.profession=p.id;
+ first_name | last_name |    name     
+------------+-----------+-------------
+ Samandar   | Oripov    | doctor
+ Nick       | Fury      | student
+ Ali        | John      | cook
+ Angel      | Ventura   | businessman
+(4 rows)
+
+example_db=# 

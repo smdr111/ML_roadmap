@@ -1,0 +1,176 @@
+Last login: Sun Oct 12 08:35:00 on ttys000
+(base) samandaroripov@Samandars-MacBook-Air ~ % psql -U postgres
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner   
+--------+-----------------------+----------+----------
+ public | contacts              | table    | postgres
+ public | doughnut_list         | table    | postgres
+ public | example_table         | table    | postgres
+ public | my_contacts_id_seq    | sequence | postgres
+ public | my_contacts_two       | table    | postgres
+ public | orders                | table    | postgres
+ public | orders_2              | table    | postgres
+ public | orders_2_order_id_seq | sequence | postgres
+ public | profession_id         | table    | postgres
+ public | profession_id_id_seq  | sequence | postgres
+(10 rows)
+
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  |     inerests      | id | phone_number | profession 
+------------+-----------+------------+-------------------+----+--------------+------------
+ Samandar   | Oripov    | 2003-09-05 | fighting,football |  1 | +13023639966 |          1
+ Nick       | Fury      | 1998-07-09 | gaming            |  2 | +13023639966 |          2
+ Ali        | John      | 2009-09-09 | listening music   |  3 | +13023639966 |          3
+ Angel      | Ventura   |            |                   |  4 | +13023639966 |          4
+(4 rows)
+
+example_db=# CREATE TABLE contact_salary(
+example_db(# id SERIAL PRIMARY KEY,
+example_db(# amount NUMERIC NOT NULL,
+example_db(# contact_id INT REFERENCES contacts(id),
+example_db(# UNIQUE (contact_id)
+example_db(# );
+CREATE TABLE
+example_db=# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner   
+--------+-----------------------+----------+----------
+ public | contact_salary        | table    | postgres
+ public | contact_salary_id_seq | sequence | postgres
+ public | contacts              | table    | postgres
+ public | doughnut_list         | table    | postgres
+ public | example_table         | table    | postgres
+ public | my_contacts_id_seq    | sequence | postgres
+ public | my_contacts_two       | table    | postgres
+ public | orders                | table    | postgres
+ public | orders_2              | table    | postgres
+ public | orders_2_order_id_seq | sequence | postgres
+ public | profession_id         | table    | postgres
+ public | profession_id_id_seq  | sequence | postgres
+(12 rows)
+
+example_db=# INSERT INTO contact_salary (amount,contact_id) VALUES (300,1);
+INSERT 0 1
+example_db=# select * from contact_salary;
+ id | amount | contact_id 
+----+--------+------------
+  1 |    300 |          1
+(1 row)
+
+example_db=# INSERT INTO contact_salary (amount,contact_id) VALUES (400,1);
+ERROR:  duplicate key value violates unique constraint "contact_salary_contact_id_key"
+DETAIL:  Key (contact_id)=(1) already exists.
+example_db=# INSERT INTO contact_salary (amount,contact_id) VALUES (1000,4);
+INSERT 0 1
+example_db=# select * from contact_salary;
+ id | amount | contact_id 
+----+--------+------------
+  1 |    300 |          1
+  3 |   1000 |          4
+(2 rows)
+
+example_db=# CREATE TABLE interests(
+example_db(# id SERIAL PRIMARY KEY,
+example_db(# name VARCHAR(50)
+example_db(# );
+CREATE TABLE
+example_db=# INSERT INTO interests (name) VALUES('football');
+INSERT 0 1
+example_db=# INSERT INTO interests (name) VALUES('fighting');
+INSERT 0 1
+example_db=# INSERT INTO interests (name) VALUES('gaming');
+INSERT 0 1
+example_db=# INSERT INTO interests (name) VALUES('cs');
+INSERT 0 1
+example_db=# select * from interests;
+ id |   name   
+----+----------
+  1 | football
+  2 | fighting
+  3 | gaming
+  4 | cs
+(4 rows)
+
+example_db=# CREATE TABLE contact_interests(
+example_db(# id SERIAL PRIMARY KEY,
+example_db(# contact_id REFERENCES contacts (id),
+example_db(# interests_id REFERENCES interests (id)
+example_db(# );
+ERROR:  syntax error at or near "REFERENCES"
+LINE 3: contact_id REFERENCES contacts (id),
+                   ^
+example_db=# CREATE TABLE contact_interests(
+id SERIAL PRIMARY KEY,
+contact_id INT  REFERENCES contacts (id),
+interests_id INT  REFERENCES interests (id)
+);
+CREATE TABLE
+example_db=# select * from interests;
+ id |   name   
+----+----------
+  1 | football
+  2 | fighting
+  3 | gaming
+  4 | cs
+(4 rows)
+
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  |     inerests      | id | phone_number | profession 
+------------+-----------+------------+-------------------+----+--------------+------------
+ Samandar   | Oripov    | 2003-09-05 | fighting,football |  1 | +13023639966 |          1
+ Nick       | Fury      | 1998-07-09 | gaming            |  2 | +13023639966 |          2
+ Ali        | John      | 2009-09-09 | listening music   |  3 | +13023639966 |          3
+ Angel      | Ventura   |            |                   |  4 | +13023639966 |          4
+(4 rows)
+
+example_db=# INSERT INTO contact_interests (contact_id,interest_id) VALUES (1,1);
+ERROR:  column "interest_id" of relation "contact_interests" does not exist
+LINE 1: INSERT INTO contact_interests (contact_id,interest_id) VALUE...
+                                                  ^
+example_db=# INSERT INTO contact_interests (contact_id,interests_id) VALUES (1,1);
+INSERT 0 1
+example_db=# INSERT INTO contact_interests (contact_id,interests_id) VALUES (2,3);
+INSERT 0 1
+example_db=# INSERT INTO contact_interests (contact_id,interests_id) VALUES (3,2);
+INSERT 0 1
+example_db=# INSERT INTO contact_interests (contact_id,interests_id) VALUES (4,4);
+INSERT 0 1
+example_db=# select * from contact_interests;
+ id | contact_id | interests_id 
+----+------------+--------------
+  1 |          1 |            1
+  2 |          2 |            3
+  3 |          3 |            2
+  4 |          4 |            4
+(4 rows)
+
+example_db=# INSERT INTO contact_interests (contact_id,interests_id) VALUES (2,4);
+INSERT 0 1
+example_db=# select * from contact_interests;
+ id | contact_id | interests_id 
+----+------------+--------------
+  1 |          1 |            1
+  2 |          2 |            3
+  3 |          3 |            2
+  4 |          4 |            4
+  5 |          2 |            4
+(5 rows)
+
+example_db=# 

@@ -1,0 +1,200 @@
+Last login: Wed Sep 17 14:40:47 on ttys002
+(base) samandaroripov@Mac ~ % psql -U posgres;
+Password for user posgres: 
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: FATAL:  password authentication failed for user "posgres"
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | doughnut_list   | table | postgres
+ public | example_table   | table | postgres
+ public | my_contacts     | table | postgres
+ public | my_contacts_two | table | postgres
+(4 rows)
+
+example_db=# SELECT * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Angel      | Ventura   |            |             | 
+ Masha      | Gogoleva  |            |             | 
+(5 rows)
+
+example_db=# SELECT * FROM my_contacts ORDER BY last_name;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Masha      | Gogoleva  |            |             | 
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Angel      | Ventura   |            |             | 
+(5 rows)
+
+example_db=# SELECT * FROM my_contacts ORDER BY last_name;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Masha      | Gogoleva  |            |             | 
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Angel      | Ventura   |            |             | 
+(5 rows)
+
+example_db=# SELECT * FROM my_contacts ORDER BY last_name DESC;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Angel      | Ventura   |            |             | 
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Masha      | Gogoleva  |            |             | 
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+(5 rows)
+
+example_db=# SELECT * FROM doughnut_list;
+ name  |  type  | price 
+-------+--------+-------
+ Apple | filled |  3.00
+ Peach | filled |  1.00
+(2 rows)
+
+(base) samandaroripov@Mac ~ % psql -U postgres;
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# SELECT * FROM doughnut_list;
+ name  |  type  | price 
+-------+--------+-------
+ Apple | filled |  3.00
+ Peach | filled |  1.00
+ Choc  | sweet  |  5.00
+(3 rows)
+
+example_db=# INSERT INTO doughnut_list
+example_db-# VALUES ('Vanilla','sour','7.00');
+INSERT 0 1
+example_db=# SELECT * FROM doughnut_list;
+  name   |  type  | price 
+---------+--------+-------
+ Apple   | filled |  3.00
+ Peach   | filled |  1.00
+ Choc    | sweet  |  5.00
+ Vanilla | sour   |  7.00
+(4 rows)
+
+example_db=# SELECT SUM(price) from doughnut_list;
+  sum  
+-------
+ 16.00
+(1 row)
+
+example_db=# SELECT MIN(price) from doughnut_list;
+ min  
+------
+ 1.00
+(1 row)
+
+example_db=# SELECT MAX(price) from doughnut_list;
+ max  
+------
+ 7.00
+(1 row)
+
+example_db=# SELECT AVG(price) from doughnut_list;
+        avg         
+--------------------
+ 4.0000000000000000
+(1 row)
+
+example_db=# SELECT COUNT(price) from doughnut_list;
+ count 
+-------
+     4
+(1 row)
+
+example_db=# INSERT INTO doughnut_list
+example_db-# VALUES ('Mazza','sweet','6.8');
+INSERT 0 1
+example_db=# SELECT type,MAX(price) FROM doughnut_list GROUP BY type;
+  type  | max  
+--------+------
+ filled | 3.00
+ sour   | 7.00
+ sweet  | 6.80
+(3 rows)
+
+example_db=# SELECT type,MIN(price) FROM doughnut_list GROUP BY type;
+  type  | min  
+--------+------
+ filled | 1.00
+ sour   | 7.00
+ sweet  | 5.00
+(3 rows)
+
+example_db=# SELECT type,AVG(price) FROM doughnut_list GROUP BY type;
+  type  |        avg         
+--------+--------------------
+ filled | 2.0000000000000000
+ sour   | 7.0000000000000000
+ sweet  | 5.9000000000000000
+(3 rows)
+
+example_db=# SELECT type,COUNT(price) FROM doughnut_list GROUP BY type;
+  type  | count 
+--------+-------
+ filled |     2
+ sour   |     1
+ sweet  |     2
+(3 rows)
+
+example_db=# SELECT type FROM doughnut_list;
+  type  
+--------
+ filled
+ filled
+ sweet
+ sour
+ sweet
+(5 rows)
+
+example_db=# SELECT DISTINCT  type FROM doughnut_list;
+  type  
+--------
+ filled
+ sour
+ sweet
+(3 rows)
+
+example_db=# SELECT * FROM doughnut_list ORDER BY price DESC LIMIT 2;
+  name   | type  | price 
+---------+-------+-------
+ Vanilla | sour  |  7.00
+ Mazza   | sweet |  6.80
+(2 rows)
+
+example_db=# 

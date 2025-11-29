@@ -1,0 +1,121 @@
+Last login: Mon Sep 15 14:49:34 on ttys002
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | doughnut_list   | table | postgres
+ public | example_table   | table | postgres
+ public | my_contacts     | table | postgres
+ public | my_contacts_two | table | postgres
+(4 rows)
+
+example_db=# SELECT * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+(3 rows)
+
+example_db=# INSERT INTO my_contacts('first_name','last_name')
+example_db-# VALUES ('Angel','Ventura');
+ERROR:  syntax error at or near "'first_name'"
+LINE 1: INSERT INTO my_contacts('first_name','last_name')
+                                ^
+example_db=# INSERT INTO my_contacts(first_name,last_name)
+VALUES ('Angel','Ventura');
+INSERT 0 1
+example_db=# INSERT INTO my_contacts(first_name,last_name)
+VALUES ('Masha','Gogoleva');
+INSERT 0 1
+example_db=# SELECT * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Angel      | Ventura   |            |             | 
+ Masha      | Gogoleva  |            |             | 
+(5 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE birthdate is NULL;
+ first_name | last_name | birthdate | profession | inerests 
+------------+-----------+-----------+------------+----------
+ Angel      | Ventura   |           |            | 
+ Masha      | Gogoleva  |           |            | 
+(2 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE birthdate IS NOT NULL;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+(3 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE last_name LIKE '%ov';
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+(1 row)
+
+example_db=# SELECT * FROM doughnut_list;
+ name  |  type  | price 
+-------+--------+-------
+ Apple | filled |  3.00
+ Peach | filled |  1.00
+(2 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE birthdate BETWEEN 2000-01-01 AND 2010-01-01;
+ERROR:  operator does not exist: date >= integer
+LINE 1: SELECT * FROM my_contacts WHERE birthdate BETWEEN 2000-01-01...
+                                                  ^
+HINT:  No operator matches the given name and argument types. You might need to add explicit type casts.
+example_db=# SELECT * FROM my_contacts WHERE birthdate BETWEEN '2000-01-01' AND '2010-01-01';
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Ali        | John      | 2009-09-09 | student     | listening music
+(2 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE inerests IN ('footbal','gaming');
+ first_name | last_name | birthdate  | profession | inerests 
+------------+-----------+------------+------------+----------
+ Nick       | Fury      | 1998-07-09 | doctor     | gaming
+(1 row)
+
+example_db=# SELECT * FROM my_contacts WHERE inerests IN ('football','gaming');
+ first_name | last_name | birthdate  | profession | inerests 
+------------+-----------+------------+------------+----------
+ Nick       | Fury      | 1998-07-09 | doctor     | gaming
+(1 row)
+
+example_db=# SELECT * FROM my_contacts WHERE inerests IN ('listening music','gaming');
+ first_name | last_name | birthdate  | profession |    inerests     
+------------+-----------+------------+------------+-----------------
+ Nick       | Fury      | 1998-07-09 | doctor     | gaming
+ Ali        | John      | 2009-09-09 | student    | listening music
+(2 rows)
+
+example_db=# 

@@ -1,0 +1,115 @@
+Last login: Sat Oct 11 01:43:50 on ttys001
+(base) samandaroripov@Samandars-MacBook-Air ~ % psql -U postgres;
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# SELECT * FROM contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id | phone_number 
+------------+-----------+------------+-------------+-------------------+----+--------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | +13023639966
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | +13023639966
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | +13023639966
+ Angel      | Ventura   |            | cook        |                   |  4 | +13023639966
+(4 rows)
+
+example_db=# CREATE TABLE profession_id(
+example_db(# id SERIAL PRIMARY KEY,
+example_db(# name VARCHAR(50));
+CREATE TABLE
+example_db=# INSERT INTO profession_id (name)  VALUES ('doctor');
+INSERT 0 1
+example_db=# INSERT INTO profession_id (name)  VALUES ('student');
+INSERT 0 1
+example_db=# INSERT INTO profession_id (name)  VALUES ('cook');
+INSERT 0 1
+example_db=# INSERT INTO profession_id (name)  VALUES ('businessman');
+INSERT 0 1
+example_db=# select * from profession_id;
+ id |    name     
+----+-------------
+  1 | doctor
+  2 | student
+  3 | cook
+  4 | businessman
+(4 rows)
+
+example_db=# ALTER TABLE contacts DROP COLUMN profession;
+ALTER TABLE
+example_db=# SELECT * FROM contacts;
+ first_name | last_name | birthdate  |     inerests      | id | phone_number 
+------------+-----------+------------+-------------------+----+--------------
+ Samandar   | Oripov    | 2003-09-05 | fighting,football |  1 | +13023639966
+ Nick       | Fury      | 1998-07-09 | gaming            |  2 | +13023639966
+ Ali        | John      | 2009-09-09 | listening music   |  3 | +13023639966
+ Angel      | Ventura   |            |                   |  4 | +13023639966
+(4 rows)
+
+example_db=# ALTER TABLE contacts ADD COLUMN profession INT  REFERENCES profession_id(id);
+ALTER TABLE
+example_db=# UPDATE  contacts SET profession=1 WHERE id=1;
+UPDATE 1
+example_db=# SELECT * FROM contacts;
+ first_name | last_name | birthdate  |     inerests      | id | phone_number | profession 
+------------+-----------+------------+-------------------+----+--------------+------------
+ Nick       | Fury      | 1998-07-09 | gaming            |  2 | +13023639966 |           
+ Ali        | John      | 2009-09-09 | listening music   |  3 | +13023639966 |           
+ Angel      | Ventura   |            |                   |  4 | +13023639966 |           
+ Samandar   | Oripov    | 2003-09-05 | fighting,football |  1 | +13023639966 |          1
+(4 rows)
+
+example_db=# UPDATE  contacts SET profession=2 WHERE id=2;
+UPDATE 1
+example_db=# UPDATE  contacts SET profession=3 WHERE id=3;
+UPDATE 1
+example_db=# UPDATE  contacts SET profession=4 WHERE id=4;
+UPDATE 1
+example_db=# SELECT * FROM contacts;
+ first_name | last_name | birthdate  |     inerests      | id | phone_number | profession 
+------------+-----------+------------+-------------------+----+--------------+------------
+ Samandar   | Oripov    | 2003-09-05 | fighting,football |  1 | +13023639966 |          1
+ Nick       | Fury      | 1998-07-09 | gaming            |  2 | +13023639966 |          2
+ Ali        | John      | 2009-09-09 | listening music   |  3 | +13023639966 |          3
+ Angel      | Ventura   |            |                   |  4 | +13023639966 |          4
+(4 rows)
+
+example_db=# UPDATE  contacts SET profession=5 WHERE id=4;
+ERROR:  insert or update on table "contacts" violates foreign key constraint "contacts_profession_fkey"
+DETAIL:  Key (profession)=(5) is not present in table "profession_id".
+example_db=# \d contacts;
+                                        Table "public.contacts"
+    Column    |          Type          | Collation | Nullable |                 Default                 
+--------------+------------------------+-----------+----------+-----------------------------------------
+ first_name   | character varying(50)  |           |          | 
+ last_name    | character varying(50)  |           |          | 
+ birthdate    | date                   |           |          | 
+ inerests     | character varying(100) |           |          | 
+ id           | integer                |           | not null | nextval('my_contacts_id_seq'::regclass)
+ phone_number | character varying(60)  |           | not null | 
+ profession   | integer                |           |          | 
+Indexes:
+    "my_contacts_pkey" PRIMARY KEY, btree (id)
+Foreign-key constraints:
+    "contacts_profession_fkey" FOREIGN KEY (profession) REFERENCES profession_id(id)
+
+example_db=# 
+
+
+
+

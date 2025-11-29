@@ -1,0 +1,190 @@
+Last login: Fri Oct 10 00:11:34 on ttys001
+(base) samandaroripov@Samandars-MacBook-Air ~ % psql -U postgres;
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner   
+--------+-----------------------+----------+----------
+ public | doughnut_list         | table    | postgres
+ public | example_table         | table    | postgres
+ public | my_contacts           | table    | postgres
+ public | my_contacts_two       | table    | postgres
+ public | orders                | table    | postgres
+ public | orders_2              | table    | postgres
+ public | orders_2_order_id_seq | sequence | postgres
+(7 rows)
+
+example_db=# \d my_contacts;
+                      Table "public.my_contacts"
+   Column   |          Type          | Collation | Nullable | Default 
+------------+------------------------+-----------+----------+---------
+ first_name | character varying(50)  |           |          | 
+ last_name  | character varying(50)  |           |          | 
+ birthdate  | date                   |           |          | 
+ profession | character varying(60)  |           |          | 
+ inerests   | character varying(100) |           |          | 
+
+example_db=# ALTER TABLE my_contacts ADD COLUMN id SERIAL PRIMARY KEY;
+ALTER TABLE
+example_db=# select * from my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id 
+------------+-----------+------------+-------------+-------------------+----
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3
+ Angel      | Ventura   |            | cook        |                   |  4
+(4 rows)
+
+example_db=# ALTER TABLE my_contacts ADD COLUMN phone VARCHAR(50);
+ALTER TABLE
+example_db=# select * from my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id | phone 
+------------+-----------+------------+-------------+-------------------+----+-------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | 
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | 
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | 
+ Angel      | Ventura   |            | cook        |                   |  4 | 
+(4 rows)
+
+example_db=# UPDATE my_contacts SET phone '+13023639966';
+ERROR:  syntax error at or near "'+13023639966'"
+LINE 1: UPDATE my_contacts SET phone '+13023639966';
+                                     ^
+example_db=# UPDATE my_contacts SET phone= '+13023639966';
+UPDATE 4
+example_db=# select * from my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id |    phone     
+------------+-----------+------------+-------------+-------------------+----+--------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | +13023639966
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | +13023639966
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | +13023639966
+ Angel      | Ventura   |            | cook        |                   |  4 | +13023639966
+(4 rows)
+
+example_db=# ALTER TABLE my_contacts RENAME TO contacts;
+ALTER TABLE
+example_db=# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner   
+--------+-----------------------+----------+----------
+ public | contacts              | table    | postgres
+ public | doughnut_list         | table    | postgres
+ public | example_table         | table    | postgres
+ public | my_contacts_id_seq    | sequence | postgres
+ public | my_contacts_two       | table    | postgres
+ public | orders                | table    | postgres
+ public | orders_2              | table    | postgres
+ public | orders_2_order_id_seq | sequence | postgres
+(8 rows)
+
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id |    phone     
+------------+-----------+------------+-------------+-------------------+----+--------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | +13023639966
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | +13023639966
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | +13023639966
+ Angel      | Ventura   |            | cook        |                   |  4 | +13023639966
+(4 rows)
+
+example_db=# ALTER TABLE contacts RENAME phone TO phone_number;
+ALTER TABLE
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id | phone_number 
+------------+-----------+------------+-------------+-------------------+----+--------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | +13023639966
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | +13023639966
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | +13023639966
+ Angel      | Ventura   |            | cook        |                   |  4 | +13023639966
+(4 rows)
+
+example_db=# \d contacts;
+                                        Table "public.contacts"
+    Column    |          Type          | Collation | Nullable |                 Default                 
+--------------+------------------------+-----------+----------+-----------------------------------------
+ first_name   | character varying(50)  |           |          | 
+ last_name    | character varying(50)  |           |          | 
+ birthdate    | date                   |           |          | 
+ profession   | character varying(60)  |           |          | 
+ inerests     | character varying(100) |           |          | 
+ id           | integer                |           | not null | nextval('my_contacts_id_seq'::regclass)
+ phone_number | character varying(50)  |           |          | 
+Indexes:
+    "my_contacts_pkey" PRIMARY KEY, btree (id)
+
+example_db=# ALTER TABLE contacts ALTER COLUMN phone_number TYPE VARCHAR(60);
+ALTER TABLE
+example_db=# \d contacts;
+                                        Table "public.contacts"
+    Column    |          Type          | Collation | Nullable |                 Default                 
+--------------+------------------------+-----------+----------+-----------------------------------------
+ first_name   | character varying(50)  |           |          | 
+ last_name    | character varying(50)  |           |          | 
+ birthdate    | date                   |           |          | 
+ profession   | character varying(60)  |           |          | 
+ inerests     | character varying(100) |           |          | 
+ id           | integer                |           | not null | nextval('my_contacts_id_seq'::regclass)
+ phone_number | character varying(60)  |           |          | 
+Indexes:
+    "my_contacts_pkey" PRIMARY KEY, btree (id)
+
+example_db=# ALTER TABLE contacts ALTER COLUMN phone_number SET NOT NULL;
+ALTER TABLE
+example_db=# \d contacts;
+                                        Table "public.contacts"
+    Column    |          Type          | Collation | Nullable |                 Default                 
+--------------+------------------------+-----------+----------+-----------------------------------------
+ first_name   | character varying(50)  |           |          | 
+ last_name    | character varying(50)  |           |          | 
+ birthdate    | date                   |           |          | 
+ profession   | character varying(60)  |           |          | 
+ inerests     | character varying(100) |           |          | 
+ id           | integer                |           | not null | nextval('my_contacts_id_seq'::regclass)
+ phone_number | character varying(60)  |           | not null | 
+Indexes:
+    "my_contacts_pkey" PRIMARY KEY, btree (id)
+
+example_db=# insert into contacts (first_name) values ('example');
+ERROR:  null value in column "phone_number" of relation "contacts" violates not-null constraint
+DETAIL:  Failing row contains (example, null, null, null, null, 5, null).
+example_db=# ALTER TABLE contacts ADD COLUMN nickname VARCHAR(50);
+ALTER TABLE
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id | phone_number | nickname 
+------------+-----------+------------+-------------+-------------------+----+--------------+----------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | +13023639966 | 
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | +13023639966 | 
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | +13023639966 | 
+ Angel      | Ventura   |            | cook        |                   |  4 | +13023639966 | 
+(4 rows)
+
+example_db=# ALTER TABLE contacts DROP COLUMN nickname;
+ALTER TABLE
+example_db=# select * from contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      | id | phone_number 
+------------+-----------+------------+-------------+-------------------+----+--------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football |  1 | +13023639966
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming            |  2 | +13023639966
+ Ali        | John      | 2009-09-09 | student     | listening music   |  3 | +13023639966
+ Angel      | Ventura   |            | cook        |                   |  4 | +13023639966
+(4 rows)
+
+example_db=# 

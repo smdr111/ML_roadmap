@@ -1,0 +1,67 @@
+Last login: Sun Sep 21 02:10:46 on ttys001
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | doughnut_list   | table | postgres
+ public | example_table   | table | postgres
+ public | my_contacts     | table | postgres
+ public | my_contacts_two | table | postgres
+(4 rows)
+
+example_db=# SELECT * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Angel      | Ventura   |            |             | 
+ Masha      | Gogoleva  |            |             | 
+(5 rows)
+
+example_db=# UPDATE my_contacts SET profession='cook' WHERE first_name='Angel';
+UPDATE 1
+example_db=# SELECT * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Masha      | Gogoleva  |            |             | 
+ Angel      | Ventura   |            | cook        | 
+(5 rows)
+
+example_db=# UPDATE my_contacts SET birthdate = '2000-09-11', profession='student' WHERE first_name = 'Masha';
+UPDATE 1
+example_db=# SELECT * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+ Angel      | Ventura   |            | cook        | 
+ Masha      | Gogoleva  | 2000-09-11 | student     | 
+(5 rows)
+
+example_db=# 

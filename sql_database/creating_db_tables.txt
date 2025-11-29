@@ -1,0 +1,42 @@
+contacts_db=# CREATE TABLE my_contacts
+contacts_db-# (
+contacts_db(#  last_name VARCHAR(50),
+contacts_db(#  first_name VARCHAR(50),
+contacts_db(#  email VARCHAR(50),
+contacts_db(#  birthdate DATE,
+contacts_db(#  PROFESSION VARCHAR(30),
+contacts_db(#  location VARCHAR(60),
+contacts_db(#  status VARCHAR(20),
+contacts_db(#  interests VARCHAR(200),
+contacts_db(#  seeking VARCHAR(200)
+contacts_db(# );
+CREATE TABLE
+contacts_db=# \d
+             List of relations
+ Schema |     Name      | Type  |  Owner   
+--------+---------------+-------+----------
+ public | doughnut_list | table | postgres
+ public | my_contacts   | table | postgres
+(2 rows)
+
+contacts_db=# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

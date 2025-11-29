@@ -1,0 +1,78 @@
+Last login: Thu Sep  4 13:48:54 on ttys001
+(base) samandaroripov@Mac ~ % psql postgres
+Password for user samandaroripov: 
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: FATAL:  password authentication failed for user "samandaroripov"
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# CREATE TABLE my_contacts_two
+example_db-# (
+example_db(# first_name VARCHAR(50) NOT NULL,
+example_db(# last_name VARCHAR(50) NOT NULL,
+example_db(# birthdate DATE
+example_db=# CREATE TABLE my_contacts_two
+example_db-# (
+example_db(# first_name VARCHAR(50) NOT NULL,
+example_db(# last_name VARCHAR(50) NOT NULL,
+example_db(# birthdate DATE
+example_db(# )
+example_db-# ;
+CREATE TABLE
+example_db=# INSERT INTO my_contacts_two (first_name) VALUES ('John');
+ERROR:  null value in column "last_name" of relation "my_contacts_two" violates not-null constraint
+DETAIL:  Failing row contains (John, null, null).
+example_db=# INSERT INTO my_contacts_two (first_name,last_name) VALUES ('John','Henrick');
+INSERT 0 1
+example_db=# \d my_contacts_two;
+                   Table "public.my_contacts_two"
+   Column   |         Type          | Collation | Nullable | Default 
+------------+-----------------------+-----------+----------+---------
+ first_name | character varying(50) |           | not null | 
+ last_name  | character varying(50) |           | not null | 
+ birthdate  | date                  |           |          | 
+
+example_db=# CREATE TABLE doughnut_list
+example_db-# (
+example_db(# name VARCHAR(50) NOT NULL,
+example_db(# type VARCHAR(50) NOT NULL,
+example_db(# price NUMERIC(3,2) NOT NULL DEFAULT 1.00
+example_db(# );
+CREATE TABLE
+example_db=# INSERT INTO doughnut_list VALUES('Apple','filled',3.00);
+INSERT 0 1
+example_db=# INSERT INTO doughnut_list VALUES('Peach','filled');
+INSERT 0 1
+example_db=# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,91 @@
+Last login: Sun Sep  7 15:44:26 on ttys000
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | doughnut_list   | table | postgres
+ public | example_table   | table | postgres
+ public | my_contacts     | table | postgres
+ public | my_contacts_two | table | postgres
+(4 rows)
+
+example_db=# select * from my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+(2 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE last_name='Oripov';
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+(1 row)
+
+example_db=# INSERT INTO my_contacts VALUES ('Ali','John','2009-09-09','student','listening music');
+INSERT 0 1
+example_db=# Select * FROM my_contacts;
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Nick       | Fury      | 1998-07-09 | doctor      | gaming
+ Ali        | John      | 2009-09-09 | student     | listening music
+(3 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE profession='doctor' OR interests='gaming';
+ERROR:  column "interests" does not exist
+LINE 1: ...T * FROM my_contacts WHERE profession='doctor' OR interests=...
+                                                             ^
+HINT:  Perhaps you meant to reference the column "my_contacts.inerests".
+example_db=# SELECT * FROM my_contacts WHERE profession='doctor' OR inerests='gaming';
+ first_name | last_name | birthdate  | profession | inerests 
+------------+-----------+------------+------------+----------
+ Nick       | Fury      | 1998-07-09 | doctor     | gaming
+(1 row)
+
+example_db=# SELECT * FROM my_contacts WHERE profession='student' OR profession='businessman';
+ first_name | last_name | birthdate  | profession  |     inerests      
+------------+-----------+------------+-------------+-------------------
+ Samandar   | Oripov    | 2003-09-05 | businessman | fighting,football
+ Ali        | John      | 2009-09-09 | student     | listening music
+(2 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE profession='student' AND birthdate<'2004-01-01';
+ first_name | last_name | birthdate | profession | inerests 
+------------+-----------+-----------+------------+----------
+(0 rows)
+
+example_db=# SELECT * FROM my_contacts WHERE profession='student' AND birthdate>'2004-01-01';
+ first_name | last_name | birthdate  | profession |    inerests     
+------------+-----------+------------+------------+-----------------
+ Ali        | John      | 2009-09-09 | student    | listening music
+(1 row)
+
+example_db=# SELECT * FROM my_contacts WHERE profession='doctor' AND inerests='gaming';
+ first_name | last_name | birthdate  | profession | inerests 
+------------+-----------+------------+------------+----------
+ Nick       | Fury      | 1998-07-09 | doctor     | gaming
+(1 row)
+
+example_db=# 

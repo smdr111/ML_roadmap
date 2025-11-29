@@ -1,0 +1,106 @@
+Last login: Thu Oct  2 01:57:06 on ttys001
+(base) samandaroripov@Samandars-MacBook-Air ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | doughnut_list   | table | postgres
+ public | example_table   | table | postgres
+ public | my_contacts     | table | postgres
+ public | my_contacts_two | table | postgres
+(4 rows)
+
+example_db=# CREATE TABLE orders(
+example_db(# order_id int PRIMARY KEY,
+example_db(# order_name VARCHAR(50)
+example_db(# );
+CREATE TABLE
+example_db=# \d
+              List of relations
+ Schema |      Name       | Type  |  Owner   
+--------+-----------------+-------+----------
+ public | doughnut_list   | table | postgres
+ public | example_table   | table | postgres
+ public | my_contacts     | table | postgres
+ public | my_contacts_two | table | postgres
+ public | orders          | table | postgres
+(5 rows)
+
+example_db=# INSERT INTO orders 
+example_db-# VALUES ('1','first order');
+INSERT 0 1
+example_db=# INSERT INTO orders 
+VALUES ('2','second  order');
+INSERT 0 1
+example_db=# SELECT * FROM orders;
+ order_id |  order_name   
+----------+---------------
+        1 | first order
+        2 | second  order
+(2 rows)
+
+example_db=# INSERT INTO orders 
+VALUES ('1','third  order');
+ERROR:  duplicate key value violates unique constraint "orders_pkey"
+DETAIL:  Key (order_id)=(1) already exists.
+example_db=# CREATE TABLE orders_2(
+example_db(# order_id SERIAL PRIMARY KEY,
+example_db(# order_name VARCHAR(50)
+example_db(# );
+CREATE TABLE
+example_db=# \d
+                  List of relations
+ Schema |         Name          |   Type   |  Owner   
+--------+-----------------------+----------+----------
+ public | doughnut_list         | table    | postgres
+ public | example_table         | table    | postgres
+ public | my_contacts           | table    | postgres
+ public | my_contacts_two       | table    | postgres
+ public | orders                | table    | postgres
+ public | orders_2              | table    | postgres
+ public | orders_2_order_id_seq | sequence | postgres
+(7 rows)
+
+example_db=# INSERT INTO orders_2 ('order_name')
+example_db-# VALUES ('first order');
+ERROR:  syntax error at or near "'order_name'"
+LINE 1: INSERT INTO orders_2 ('order_name')
+                              ^
+example_db=# INSERT INTO orders_2 (order_name)
+VALUES ('first order');
+INSERT 0 1
+example_db=# INSERT INTO orders_2 (order_name)
+VALUES ('second order');
+INSERT 0 1
+example_db=# INSERT INTO orders_2 (order_name)
+VALUES ('third order');
+INSERT 0 1
+example_db=# select * from orders_2;
+ order_id |  order_name  
+----------+--------------
+        1 | first order
+        2 | second order
+        3 | third order
+(3 rows)
+
+example_db=# 

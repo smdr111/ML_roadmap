@@ -1,0 +1,75 @@
+Last login: Mon Sep  1 12:59:02 on ttys002
+(base) samandaroripov@Mac ~ % psql -U postgres
+Password for user postgres: 
+psql (17.6 (Homebrew))
+Type "help" for help.
+
+postgres=# \l
+                                                            List of databases
+      Name      |     Owner      | Encoding | Locale Provider | Collate | Ctype | Locale | ICU Rules |         Access privileges         
+----------------+----------------+----------+-----------------+---------+-------+--------+-----------+-----------------------------------
+ contacts_db    | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ example_db     | postgres       | UTF8     | libc            | C       | C     |        |           | 
+ postgres       | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ samandaroripov | samandaroripov | UTF8     | libc            | C       | C     |        |           | 
+ template0      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+ template1      | samandaroripov | UTF8     | libc            | C       | C     |        |           | =c/samandaroripov                +
+                |                |          |                 |         |       |        |           | samandaroripov=CTc/samandaroripov
+(6 rows)
+
+postgres=# \c example_db;
+You are now connected to database "example_db" as user "postgres".
+example_db=# \d
+             List of relations
+ Schema |     Name      | Type  |  Owner   
+--------+---------------+-------+----------
+ public | example_table | table | postgres
+(1 row)
+
+example_db=# CREATE TABLE my_contacts
+example_db-# (
+example_db(#  first_name VARCHAR(50),
+example_db(#  last_name VARCHAR(50),
+example_db(#  birthdate DATE,
+example_db(#  profession VARCHAR(60),
+example_db(#  inerests VARCHAR(100)
+example_db(# );
+CREATE TABLE
+example_db-# INSERT INTO my_contacts (first_name,last_name,birthdate,profession,interests)
+VALUES ('Samandar','Oripov','2003-09-05','businessman','fighting,football');
+ERROR:  syntax error at or near "z"
+LINE 2: z
+        ^
+example_db=# INSERT INTO my_contacts (first_name,last_name,birthdate,profession,inerests)
+example_db-# VALUES ('Samandar','Oripov','2003-09-05','businessman','fighting,football');
+INSERT 0 1
+example_db=# INSERT INTO my_contacts (first_name,last_name,birthdate,profession,inerests)
+example_db-# VALUES ('Nick','Fury','1998-07-09','doctor','gaming');
+INSERT 0 1
+example_db=# 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
